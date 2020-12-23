@@ -6,6 +6,7 @@ abstract class ITest extends ALTInterface
 	abstract hello(): void;
 }
 
+
 class Test extends ALTObject implements ITest
 {
 	hello(){

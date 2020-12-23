@@ -6,6 +6,14 @@ export class ALTClassNotFoundError extends Error
     }
 }
 
+export class ALTRetainedObjNotFoundError extends Error
+{
+    constructor(msg: string){
+        super(msg);
+        this.name = "ALTRetainedObjNotFoundError";
+    }
+}
+
 export class ALTDuplicateClassError extends Error
 {
     constructor(msg: string){

@@ -1,7 +1,16 @@
-export abstract class IALTModule
+import { DECLARE_INTERFACE_FUNC } from "./ALTindex";
+import { ALTInterface } from "./ALTindex";
+import { ENABLE_REMOTE } from "./ALTObject";
+
+@ENABLE_REMOTE
+export abstract class IALTModule extends ALTInterface
 {
-    abstract onLoad(): void;
-    abstract onStartup(): void;
-    abstract onReceiveIpc(): void;
-    abstract onReceiveMsg(): void;
+    gName(): string{ DECLARE_INTERFACE_FUNC(); return ""; }
+    onLoad(): void{ DECLARE_INTERFACE_FUNC() };
+    onStartup(): void{ DECLARE_INTERFACE_FUNC() };
+    onReceiveIpc(): void{ DECLARE_INTERFACE_FUNC() };
+    onReceiveMsg(): void{ DECLARE_INTERFACE_FUNC() };
 };
+
+
+
