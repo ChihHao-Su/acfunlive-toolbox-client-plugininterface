@@ -1,8 +1,6 @@
-import { DECLARE_INTERFACE_FUNC } from "./ALTindex";
-import { ALTInterface } from "./ALTindex";
-import { ENABLE_REMOTE } from "./ALTObject";
+import { ALTInterface, DECLARE_INTERFACE_FUNC, DYNAMIC_IMPLABLE_INTERFACE } from "./ALTObject";
 
-@ENABLE_REMOTE
+@DYNAMIC_IMPLABLE_INTERFACE
 export abstract class IALTModule extends ALTInterface
 {
     gName(): string{ DECLARE_INTERFACE_FUNC(); return ""; }

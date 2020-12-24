@@ -8,14 +8,17 @@ beforeAll(async () => {
     server = await ALTRPCServer.create();
 });
 
-test("Rpc server is able to react when client connect", async (done) => {
+test("Rpc server is able to react when client connect", (done) => {
     const ipc = new Nodeipc.IPC();
     const onConnect = () => {
         ipc.of["Acfunlive"].on("connect", () => {
-            ipc.log("Connected to server!");
-            //ipc.disconnect("Acfunlive");
+            ipc.log("Connected to server! Waiting for response...");
+        });
+        ipc.of["Acfunlive"].on("serverConfirmConnected", () => {
+            ipc.log("Server confirm connected!");
+            ipc.disconnect("Acfunlive");
             done();
-        })
+        });
     };
     
     try{
@@ -25,14 +28,17 @@ test("Rpc server is able to react when client connect", async (done) => {
     }catch(err){ done(err); }
 });
 
-test("Rpc server is able to react when client connect", async (done) => {
+test("Rpc server is able to react when client connect", (done) => {
     const ipc = new Nodeipc.IPC();
     const onConnect = () => {
         ipc.of["Acfunlive"].on("connect", () => {
-            ipc.log("Connected to server!");
-            //ipc.disconnect("Acfunlive")
+            ipc.log("Connected to server! Waiting for response...");
+        });
+        ipc.of["Acfunlive"].on("serverConfirmConnected", () => {
+            ipc.log("Server confirm connected!");
+            ipc.disconnect("Acfunlive");
             done();
-        })
+        });
     };
     
     try{
@@ -42,6 +48,7 @@ test("Rpc server is able to react when client connect", async (done) => {
     }catch(err){ done(err); }
 });
 
-afterAll(() => {
-    server?.distory();
+afterAll(async (done) => {
+    await server?.distory();
+    done();
 });

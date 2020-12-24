@@ -1,6 +1,6 @@
 import { ALTCallingInterfaceFunc, ALTClassHasntMemberError, ALTClassNotFoundError, ALTDuplicateClassError, ALTRetainedObjNotFoundError } from "@/ALTError"
 import * as Uuid from "uuid"
-import { ALTRemoteLocator } from "./ALTindex";
+import { ALTRemoteLocator } from "./ALTRemoteLocator";
 
 let ClassList: Array<ALTClass> = [];
 let RetainedObjList: Array<ALTObject> = [];
@@ -29,7 +29,6 @@ export function DECLARE_DYNAMIC(class_: any): void{
 
 export abstract class ALTInterface
 {
-
 };
 export abstract class ALTObject
 {
@@ -60,7 +59,7 @@ export class ALTClass
 
 export const CLASS = (class_: any) => new ALTClass(class_)
 export const DECLARE_INTERFACE_FUNC = () => new ALTCallingInterfaceFunc("Interface is not callable!");
-export const ENABLE_REMOTE = (target: any) => {};
+export const DYNAMIC_IMPLABLE_INTERFACE = (target: any) => {};
 
 export class TypeHelper {
     static typeName(ctor: { name:string }) : string {
@@ -68,31 +67,3 @@ export class TypeHelper {
     }
 }
 
-export class ALTProxy<T extends ALTInterface>{
-    constructor(altDynClass: ALTClass){
-        const altClassObj = altDynClass.construct()
-        console.log(altClassObj);
-        return new Proxy( altClassObj , {
-            get: (target, key) => {
-                console.log(key);
-                console.log(`ALTProxy: Getting key ${String(key)} of ${altDynClass.name}`);
-                
-                if(!(key in altClassObj))
-                    throw new ALTClassHasntMemberError(`Class ${altDynClass.name} hasn't member called ${String(key)}!`);
-                if(String(key) == "testvar")
-                    return "test";
-                if(String(key) == "testfunc")
-                    return () => "test";
-
-                return new Proxy({}, {
-                    apply: (target, self, args) => {
-
-                    }
-                });
-            }
-        });
-    }
-    static create<T>(altDynClass: ALTClass): T{
-        return <T>(new ALTProxy(altDynClass));
-    }
-};
