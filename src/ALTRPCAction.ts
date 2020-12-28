@@ -1,6 +1,6 @@
 import { ALTRemoteLocator } from "./ALTRemoteLocator";
 
-enum ALTRPCActionStatus
+export enum ALTRPCActionStatus
 {
 	LAUNCHED = 0,		// When rpc is launched by application
 	SCHEDULE,			// When rpc request is transported to middle-end, 
@@ -17,7 +17,7 @@ enum ALTRPCActionStatus
 	DONE				// The promise launched the rpc is resolved.
 };
 
-interface ALTRPCAction
+export interface ALTRPCAction
 {
 	time: Date;
 	uuid: string;

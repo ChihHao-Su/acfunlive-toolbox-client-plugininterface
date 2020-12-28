@@ -1,31 +1,49 @@
 import { ALTClassHasntMemberError } from "./ALTError";
 import { ALTClass, ALTInterface } from "./ALTObject";
+import _, { forEach } from "lodash"
+import { ALTRemoteLocator } from "./ALTRemoteLocator";
+import { ALTRPCActionStatus, ALTRPCAction } from "./ALTRPCAction"
+import * as Uuid from "uuid"
+
 
 export class ALTProxy<T extends ALTInterface>{
-    constructor(altDynClass: ALTClass){
-        const altClassObj = altDynClass.construct()
-        console.log(altClassObj);
-        return new Proxy( altClassObj , {
-            get: (target, key) => {
-                console.log(key);
-                console.log(`ALTProxy: Getting key ${String(key)} of ${altDynClass.name}`);
-                
-                if(!(key in altClassObj))
-                    throw new ALTClassHasntMemberError(`Class ${altDynClass.name} hasn't member called ${String(key)}!`);
-                if(String(key) == "testvar")
-                    return "test";
-                if(String(key) == "testfunc")
-                    return () => "test";
+	private constructor(remoteObjLoc: ALTRemoteLocator){
+	   this.remoteObjLoc = remoteObjLoc; 
+	}
 
-                return new Proxy({}, {
-                    apply: (target, self, args) => {
+	remoteObjLoc: ALTRemoteLocator;
+	
 
-                    }
-                });
-            }
-        });
-    }
-    static create<T>(altDynClass: ALTClass): T{
-        return <T>(new ALTProxy(altDynClass));
-    }
+	static makeProxy(altDynClass: ALTClass, remoteObjLoc: ALTRemoteLocator): ProxyConstructor{
+		const altClassObj = altDynClass.construct()
+		console.log(altClassObj);
+		return new Proxy( altClassObj , {
+			get: (target, key) => {
+				console.log(key);
+				console.log(`ALTProxy: Getting key ${String(key)} of ${altDynClass.name}`);
+				
+				if(!(key in altClassObj))
+					throw new ALTClassHasntMemberError(`Class ${altDynClass.name} hasn't member called ${String(key)}!`);
+
+				const callable = () => {};
+				callable.__proxyInfo = new ALTProxy(remoteObjLoc);
+				const rpcAction: ALTRPCAction = {time: new Date(), uuid: Uuid.v4(), target: remoteObjLoc, 
+												funcName: String(key), argList: [], status: ALTRPCActionStatus.LAUNCHED};
+				callable.__rpcAction = rpcAction;
+
+				return new Proxy(callable, {
+					apply: (target, self, args) => {
+						console.log(`ALTProxy: Calling: ${String(JSON.stringify(target.__rpcAction))}`);
+						console.log(args);
+						for(let e in args){
+							console.log(e);
+						}
+					}
+				});
+			}
+		});
+	}
+	static create<T>(altDynClass: ALTClass, remoteObjLoc: ALTRemoteLocator): T{
+		return <T><unknown>(ALTProxy.makeProxy(altDynClass, remoteObjLoc));
+	}
 };
