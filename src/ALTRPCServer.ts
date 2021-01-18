@@ -1,43 +1,39 @@
 import { IALTModule } from "./ALTindex";
 import * as Nodeipc from "node-ipc"
+import * as sio from "socket.io"
+import { isUndefined } from "lodash";
 
 //interface 
 
 export class ALTRPCServer
 {
-    private constructor(){
-		
+
+    public sioServer: sio.Server;
+
+    public constructor(){
+        this.sioServer = new sio.Server(3378);
+        this.onServerCreated();
     }
     private onServerCreated(): void{
         console.log("Server started up!")
-        Nodeipc.server.on("connect", (socket) => {
-            Nodeipc.log(`Client connected! socket=${String(socket)}`);
-            Nodeipc.server.emit(socket, "serverConfirmConnected", null);
-        });
+        this.sioServer.on("connection", (socket: sio.Socket, ) => {
+            console.log(`Client connected! socket=${String(socket)}`);
+            socket.emit("serverConfirmConnected");
+            
+            
+        })
     }
 
-    static create(): Promise<ALTRPCServer>{
-        return new Promise( (resolve, reject) => {
-            const inst = new ALTRPCServer();
-            Nodeipc.serveNet(
-			    "::1", 3378,
-			    () => {
-                    inst.onServerCreated();
-                    resolve(inst);
-			    }
-            );
-            try{
-                Nodeipc.server.start();
-            }catch(err){
-                reject();
-            }
-        });
-    }
 
     distory(): Promise<void>{
         return new Promise( (resolve, reject) => {
-            Nodeipc.server.stop();
-            setTimeout(() => { resolve(); }, 1000);
+            this.sioServer.close((err: Error | undefined) => {
+                if(err !== undefined){
+                    reject(err);
+                }else{
+                    setTimeout(() => { resolve(); }, 1000);
+                }
+            })
         });
     }
 };

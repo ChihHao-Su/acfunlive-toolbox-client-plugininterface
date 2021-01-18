@@ -1,51 +1,34 @@
 import { ALTRPCServer } from "@/ALTRPCServer";
 import * as Nodeipc from "node-ipc"
+import * as sio from "socket.io-client"
 import { resolveComponent } from "vue";
 
 let server: ALTRPCServer | null = null;
 
 beforeAll(async () => {
-    server = await ALTRPCServer.create();
+    server = new ALTRPCServer();
 });
 
 test("Rpc server is able to react when client connect", (done) => {
     const ipc = new Nodeipc.IPC();
-    const onConnect = () => {
-        ipc.of["Acfunlive"].on("connect", () => {
-            ipc.log("Connected to server! Waiting for response...");
-        });
-        ipc.of["Acfunlive"].on("serverConfirmConnected", () => {
-            ipc.log("Server confirm connected!");
-            ipc.disconnect("Acfunlive");
-            done();
-        });
-    };
-    
-    try{
-        ipc.connectToNet(
-            "Acfunlive", "::1", 3378, onConnect
-        )
-    }catch(err){ done(err); }
+    console.log("Connecting to server...");
+    const sioCli =  sio.io("http://localhost:3378");
+
+    sioCli.on("serverConfirmConnected", () => {
+        console.log("Server confirmed connected!")
+        done();
+    });
 });
 
 test("Rpc server is able to react when client connect", (done) => {
     const ipc = new Nodeipc.IPC();
-    const onConnect = () => {
-        ipc.of["Acfunlive"].on("connect", () => {
-            ipc.log("Connected to server! Waiting for response...");
-        });
-        ipc.of["Acfunlive"].on("serverConfirmConnected", () => {
-            ipc.log("Server confirm connected!");
-            ipc.disconnect("Acfunlive");
-            done();
-        });
-    };
-    
-    try{
-        ipc.connectToNet(
-            "Acfunlive", "::1", 3378, onConnect
-        )
-    }catch(err){ done(err); }
+    console.log("Connecting to server...");
+    const sioCli =  sio.io("http://localhost:3378");
+
+    sioCli.on("serverConfirmConnected", () => {
+        console.log("Server confirmed connected!")
+        done();
+    });
 });
 
 afterAll(async (done) => {
