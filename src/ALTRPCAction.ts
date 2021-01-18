@@ -1,6 +1,6 @@
 import { ALTRemoteLocator } from "./ALTRemoteLocator";
 
-export enum ALTRPCActionStatus
+export enum ALTRPCActionStat
 {
 	LAUNCHED = 0,		// When rpc is launched by application
 	SCHEDULE,			// When rpc request is transported to middle-end, 
@@ -24,5 +24,5 @@ export interface ALTRPCAction
 	target: ALTRemoteLocator;
 	funcName: string;
 	argList: Array<any>;
-	status: ALTRPCActionStatus;
+	status: ALTRPCActionStat;
 };

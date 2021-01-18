@@ -14,13 +14,14 @@ test("Rpc server is able to react when client connect", (done) => {
     console.log("Connecting to server...");
     const sioCli =  sio.io("http://localhost:3378");
 
-    sioCli.on("serverConfirmConnected", () => {
-        console.log("Server confirmed connected!")
+    sioCli.on("serverConfirmConnected", (uuid: string) => {
+        console.log(`Server confirmed connected! uuid=${uuid}`);
+        expect(uuid).toContain("-");
         done();
     });
 });
 
-test("Rpc server is able to react when client connect", (done) => {
+/*test("Rpc server is able to react when client connect", (done) => {
     const ipc = new Nodeipc.IPC();
     console.log("Connecting to server...");
     const sioCli =  sio.io("http://localhost:3378");
@@ -29,7 +30,7 @@ test("Rpc server is able to react when client connect", (done) => {
         console.log("Server confirmed connected!")
         done();
     });
-});
+});*/
 
 afterAll(async (done) => {
     await server?.distory();

@@ -2,6 +2,7 @@ import { IALTModule } from "./ALTindex";
 import * as Nodeipc from "node-ipc"
 import * as sio from "socket.io"
 import { isUndefined } from "lodash";
+import * as Uuid from "uuid"
 
 //interface 
 
@@ -17,10 +18,9 @@ export class ALTRPCServer
     private onServerCreated(): void{
         console.log("Server started up!")
         this.sioServer.on("connection", (socket: sio.Socket, ) => {
-            console.log(`Client connected! socket=${String(socket)}`);
-            socket.emit("serverConfirmConnected");
-            
-            
+            const uuid = Uuid.v4()
+            console.log(`Client request connect! addr=${String(socket.handshake.address)}, giving uuid ${uuid}.`);
+            socket.emit("serverConfirmConnected", uuid);
         })
     }
 
