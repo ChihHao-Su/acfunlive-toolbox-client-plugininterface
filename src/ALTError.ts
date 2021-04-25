@@ -37,3 +37,11 @@ export class ALTCallingInterfaceFunc extends Error
         this.name = "ALTCallingInterfaceFunc";
     }
 }
+
+export class ALTModuleNotFoundError extends Error
+{
+    constructor(msg: string){
+        super(msg);
+        this.name = "ALTModuleNotFoundError";
+    }
+}

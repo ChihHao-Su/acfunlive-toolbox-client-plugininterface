@@ -9,7 +9,7 @@ abstract class ITest extends ALTInterface
 }
 
 @DYNAMIC_IMPLABLE_INTERFACE
-abstract class ITest2 extends ALTInterface		// This will don't work
+abstract class ITest2 extends ALTInterface		// This will don't work. 不要这样写接口，请以上面的方式写。
 {
 	abstract testfunc(): string;
 }

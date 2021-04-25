@@ -31,11 +31,15 @@ export function DYNAMIC_IMPLABLE_INTERFACE(class_: any): void{
 		throw new ALTDuplicateClassError(`Class ${CLASS(class_).name} 已註冊！`);
 	ClassList.push(ITFC(class_));
 }
+export function REMOTE_OVERRIDE(target: any, key: string, desc: PropertyDescriptor) { };
+export function TYPEDEF(class_: any) { };
 
 export abstract class ALTInterface
 {
+	gUuid(): string{ throw DECLARE_INTERFACE_FUNC(); }
+	
 };
-export abstract class ALTObject
+export abstract class ALTObject extends ALTInterface
 {
 	isRemote: boolean = false;
 	uuid: string = Uuid.v4();
@@ -48,6 +52,9 @@ export abstract class ALTObject
 	}
 	release(): void{
 		RetainedObjList.filter((ele) => {ele !== this});
+	}
+	gUuid(): string{
+		return this.uuid;
 	}
 };
 

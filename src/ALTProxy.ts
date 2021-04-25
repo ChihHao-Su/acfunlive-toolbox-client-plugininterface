@@ -2,7 +2,7 @@ import { ALTClassHasntMemberError } from "./ALTError";
 import { ALTClass, ALTInterface } from "./ALTObject";
 import _, { forEach } from "lodash"
 import { ALTRemoteLocator } from "./ALTRemoteLocator";
-import { ALTRPCActionStatus, ALTRPCAction } from "./ALTRPCAction"
+import { ALTRPCActionStat, ALTRPCAction } from "./ALTRPCAction"
 import * as Uuid from "uuid"
 
 
@@ -15,6 +15,9 @@ export class ALTProxy<T extends ALTInterface>{
 	
 
 	static makeProxy(altDynClass: ALTClass, remoteObjLoc: ALTRemoteLocator): ProxyConstructor{
+		//TODO: 判断远程对象类型是否正确
+
+
 		const altClassObj = altDynClass.construct()
 		console.log(altClassObj);
 		return new Proxy( altClassObj , {
@@ -28,7 +31,7 @@ export class ALTProxy<T extends ALTInterface>{
 				const callable = () => {};
 				callable.__proxyInfo = new ALTProxy(remoteObjLoc);
 				const rpcAction: ALTRPCAction = {time: new Date(), uuid: Uuid.v4(), target: remoteObjLoc, 
-												funcName: String(key), argList: [], status: ALTRPCActionStatus.LAUNCHED};
+												funcName: String(key), argList: [], status: ALTRPCActionStat.LAUNCHED};
 				callable.__rpcAction = rpcAction;
 
 				return new Proxy(callable, {
